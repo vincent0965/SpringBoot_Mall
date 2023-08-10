@@ -1,13 +1,15 @@
 package com.vincentTsai.SpringBootMall.Controller;
 
+import com.vincentTsai.SpringBootMall.DTO.ProductRequest;
 import com.vincentTsai.SpringBootMall.Service.ProductService;
 import com.vincentTsai.SpringBootMall.modal.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 public class ProductController {
@@ -26,4 +28,19 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    @PostMapping("/products")
+    public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductRequest productRequest){
+        //新增商品
+        Integer productId = productService.createProduct(productRequest);
+        //透過參數將商品查詢回來
+        Product product = productService.getProductById(productId);
+        //將查詢到的商品回傳給前端並給予狀態碼(4-14)
+        return ResponseEntity.status(HttpStatus.CREATED).body(product);
+    }
+
+
+
+
+
 }
