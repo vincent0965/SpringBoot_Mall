@@ -2,6 +2,7 @@ package com.vincentTsai.SpringBootMall.DAO.impl;
 
 import com.vincentTsai.SpringBootMall.DAO.ProductDao;
 import com.vincentTsai.SpringBootMall.DTO.ProductRequest;
+import com.vincentTsai.SpringBootMall.constant.ProductCategory;
 import com.vincentTsai.SpringBootMall.modal.Product;
 import com.vincentTsai.SpringBootMall.rowmapper.ProductRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,24 @@ public class ProductDaoImp implements ProductDao {
 
 
     @Override
-    public List<Product> getProducts() {
+    public List<Product> getProducts(ProductCategory category, String search) {
         String sql = "select product_id, product_name, category, image_url, price, stock, description," +
-                "created_date, last_modified_date from product";
+                "created_date, last_modified_date " +
+                "from product where 1 = 1";
 
         Map<String, Object> map = new HashMap<>();
+
+        if(category != null){
+            sql = sql + " and category = :category";
+            //category.name() => 因為category是enum類型 要使用name()轉成字串型態才可以加入map
+            map.put("category", category.name());
+        }
+
+        if(search != null){
+            sql = sql + " and product_name like :search";
+            map.put("search", "%"+search+"%");
+        }
+
         List<Product> productList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
 
         return productList;

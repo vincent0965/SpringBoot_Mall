@@ -2,6 +2,7 @@ package com.vincentTsai.SpringBootMall.Controller;
 
 import com.vincentTsai.SpringBootMall.DTO.ProductRequest;
 import com.vincentTsai.SpringBootMall.Service.ProductService;
+import com.vincentTsai.SpringBootMall.constant.ProductCategory;
 import com.vincentTsai.SpringBootMall.modal.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,10 +20,15 @@ public class ProductController {
     private ProductService productService;
 
     //查詢商品列表
+    //加入RequestParam => 新增參數 可透過輸入參數篩選出需要的資料
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(){
+    public ResponseEntity<List<Product>> getProducts(
+            //required = false => 讓參數不一定是必填
+            @RequestParam(required = false) ProductCategory category,
+            @RequestParam(required = false) String search
+    ){
         //回傳一個List
-        List<Product> productList= productService.getProducts();
+        List<Product> productList= productService.getProducts(category, search);
         //回傳狀態碼以及List
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }

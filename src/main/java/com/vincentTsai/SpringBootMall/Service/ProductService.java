@@ -1,13 +1,14 @@
 package com.vincentTsai.SpringBootMall.Service;
 
 import com.vincentTsai.SpringBootMall.DTO.ProductRequest;
+import com.vincentTsai.SpringBootMall.constant.ProductCategory;
 import com.vincentTsai.SpringBootMall.modal.Product;
 
 import java.util.List;
 
 public interface ProductService {
 
-    List<Product> getProducts();
+    List<Product> getProducts(ProductCategory category, String search);
 
     Product getProductById(Integer productId);
 

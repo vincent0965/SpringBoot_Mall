@@ -3,6 +3,7 @@ package com.vincentTsai.SpringBootMall.Service.impl;
 import com.vincentTsai.SpringBootMall.DAO.ProductDao;
 import com.vincentTsai.SpringBootMall.DTO.ProductRequest;
 import com.vincentTsai.SpringBootMall.Service.ProductService;
+import com.vincentTsai.SpringBootMall.constant.ProductCategory;
 import com.vincentTsai.SpringBootMall.modal.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,8 +17,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductDao productDao;
 
     @Override
-    public List<Product> getProducts() {
-        return productDao.getProducts();
+    public List<Product> getProducts(ProductCategory category, String search) {
+        return productDao.getProducts(category, search);
     }
 
     @Override
