@@ -3,7 +3,11 @@ package com.vincentTsai.SpringBootMall.DAO;
 import com.vincentTsai.SpringBootMall.DTO.ProductRequest;
 import com.vincentTsai.SpringBootMall.modal.Product;
 
+import java.util.List;
+
 public interface ProductDao {
+
+    List<Product> getProducts();
 
     Product getProductById(Integer productId);
 

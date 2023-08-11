@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 public class ProductController {
@@ -17,11 +18,20 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    //查詢商品列表
+    @GetMapping("/products")
+    public ResponseEntity<List<Product>> getProducts(){
+        //回傳一個List
+        List<Product> productList= productService.getProducts();
+        //回傳狀態碼以及List
+        return ResponseEntity.status(HttpStatus.OK).body(productList);
+    }
+
     @GetMapping("/products/{productId}")
     public ResponseEntity<Product> getProduct(@PathVariable Integer productId){
         Product product = productService.getProductById(productId);
 
-        // 4-14 Http狀態碼
+        // 檢查商品是否為Null 4-14 Http狀態碼
         if(product != null){
             return ResponseEntity.status(HttpStatus.OK).body(product);
         }else{
