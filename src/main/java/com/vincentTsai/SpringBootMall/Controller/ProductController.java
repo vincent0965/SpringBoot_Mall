@@ -40,12 +40,16 @@ public class ProductController {
     public ResponseEntity<List<Product>> getProducts(
             //required = false => 讓參數不一定是必填
             @RequestParam(required = false) ProductCategory category,
-            @RequestParam(required = false) String search
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "created_date") String orderBy,//給定預設值排序
+            @RequestParam(defaultValue = "desc") String sort
     ){
         //如果查詢條件比較多 可以建立成class再一併傳送過去
         ProductQueryParms productQueryParms = new ProductQueryParms();
         productQueryParms.setCategory(category);
         productQueryParms.setSearch(search);
+        productQueryParms.setOrderBy(orderBy);
+        productQueryParms.setSort(sort);
         List<Product> productList= productService.getProducts(productQueryParms);
 
         return ResponseEntity.status(HttpStatus.OK).body(productList);
