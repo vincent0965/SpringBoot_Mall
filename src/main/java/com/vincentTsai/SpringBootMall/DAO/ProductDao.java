@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ProductDao {
 
-    List<Product> getProducts(ProductCategory category, String search);
+    List<Product> getProducts(ProductQueryParms productQueryParms);
 
     Product getProductById(Integer productId);
 

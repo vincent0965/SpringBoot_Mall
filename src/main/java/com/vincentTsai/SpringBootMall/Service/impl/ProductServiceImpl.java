@@ -1,6 +1,7 @@
 package com.vincentTsai.SpringBootMall.Service.impl;
 
 import com.vincentTsai.SpringBootMall.DAO.ProductDao;
+import com.vincentTsai.SpringBootMall.DAO.ProductQueryParms;
 import com.vincentTsai.SpringBootMall.DTO.ProductRequest;
 import com.vincentTsai.SpringBootMall.Service.ProductService;
 import com.vincentTsai.SpringBootMall.constant.ProductCategory;
@@ -17,8 +18,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductDao productDao;
 
     @Override
-    public List<Product> getProducts(ProductCategory category, String search) {
-        return productDao.getProducts(category, search);
+    public List<Product> getProducts(ProductQueryParms productQueryParms) {
+        return productDao.getProducts(productQueryParms);
     }
 
     @Override
