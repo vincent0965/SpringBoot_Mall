@@ -5,6 +5,7 @@ import com.vincentTsai.SpringBootMall.DTO.ProductRequest;
 import com.vincentTsai.SpringBootMall.Service.ProductService;
 import com.vincentTsai.SpringBootMall.constant.ProductCategory;
 import com.vincentTsai.SpringBootMall.modal.Product;
+import com.vincentTsai.SpringBootMall.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,6 @@ public class ProductController {
 
     //查詢商品列表
     //加入RequestParam => 新增參數 可透過輸入參數篩選出需要的資料
-    //普通傳遞參數的方法
 //    @GetMapping("/products")
 //    public ResponseEntity<List<Product>> getProducts(
 //            //required = false => 讓參數不一定是必填
@@ -40,8 +40,10 @@ public class ProductController {
 //    }
 
 
+    // 透過class將多個參數整理後一併傳到後端
+    // 回傳JSON格式(page) 讓前端知道總商品數以及結果
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(
+    public ResponseEntity<Page<Product>> getProducts(
             //查詢條件 Filtering
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) String search,
@@ -60,9 +62,22 @@ public class ProductController {
         productQueryParms.setSort(sort);
         productQueryParms.setLimit(limit);
         productQueryParms.setOffset(offset);
+
+        //DAO查詢回傳結果
         List<Product> productList= productService.getProducts(productQueryParms);
 
-        return ResponseEntity.status(HttpStatus.OK).body(productList);
+        //查詢總筆數(可以根據Category調整查詢總數)
+        Integer total = productService.countProduct(productQueryParms);
+
+        //使用page來裝分頁資料數、跳過數、總數、結果
+        Page<Product> page = new Page<>();
+        page.setLimit(limit);
+        page.setOffset(offset);
+        page.setTotal(total);
+        page.setResults(productList);
+
+        //將結果回傳前端
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
     @GetMapping("/products/{productId}")

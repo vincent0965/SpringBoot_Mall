@@ -137,5 +137,27 @@ public class ProductDaoImp implements ProductDao {
         namedParameterJdbcTemplate.update(sql, map);
     }
 
+    @Override
+    public Integer countProduct(ProductQueryParms productQueryParms) {
+        String sql = "select count(*) from product where 1=1";
 
+        Map<String, Object> map = new HashMap<>();
+
+        // 查詢條件
+        if(productQueryParms.getCategory() != null){
+            sql = sql + " and category = :category";
+            //category.name() => 因為category是enum類型 要使用name()轉成字串型態才可以加入map
+            map.put("category", productQueryParms.getCategory().name());
+        }
+
+        if(productQueryParms.getSearch() != null){
+            sql = sql + " and product_name like :search";
+            map.put("search", "%"+productQueryParms.getSearch()+"%");
+        }
+
+        // Integer.class => 將結果轉換成Integer類型的class
+        Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
+
+        return total;
+    }
 }
