@@ -9,11 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
+@Validated //4-13
 @RestController
 public class ProductController {
 
@@ -38,11 +42,15 @@ public class ProductController {
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getProducts(
-            //required = false => 讓參數不一定是必填
+            //查詢條件 Filtering
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) String search,
-            @RequestParam(defaultValue = "created_date") String orderBy,//給定預設值排序
-            @RequestParam(defaultValue = "desc") String sort
+            //排序條件 Sorting (通常會給定預設值排序)
+            @RequestParam(defaultValue = "created_date") String orderBy,
+            @RequestParam(defaultValue = "desc") String sort,
+            //分頁 Pagination (為了保護資料庫的效能 限制搜尋的數量) 4-13(max、min、validated)
+            @RequestParam(defaultValue = "3") @Max(1000) @Min(0) Integer limit, //選取幾筆資料
+            @RequestParam(defaultValue = "0") @Min(0) Integer offset //跳過幾筆資料
     ){
         //如果查詢條件比較多 可以建立成class再一併傳送過去
         ProductQueryParms productQueryParms = new ProductQueryParms();
@@ -50,6 +58,8 @@ public class ProductController {
         productQueryParms.setSearch(search);
         productQueryParms.setOrderBy(orderBy);
         productQueryParms.setSort(sort);
+        productQueryParms.setLimit(limit);
+        productQueryParms.setOffset(offset);
         List<Product> productList= productService.getProducts(productQueryParms);
 
         return ResponseEntity.status(HttpStatus.OK).body(productList);
