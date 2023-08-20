@@ -34,16 +34,7 @@ public class ProductDaoImp implements ProductDao {
         Map<String, Object> map = new HashMap<>();
 
         // 查詢條件
-        if(productQueryParms.getCategory() != null){
-            sql = sql + " and category = :category";
-            //category.name() => 因為category是enum類型 要使用name()轉成字串型態才可以加入map
-            map.put("category", productQueryParms.getCategory().name());
-        }
-
-        if(productQueryParms.getSearch() != null){
-            sql = sql + " and product_name like :search";
-            map.put("search", "%"+productQueryParms.getSearch()+"%");
-        }
+        sql = addFilterSql(sql, map, productQueryParms);
 
         // 排序(因為有傳入預設值 因此不用檢查是否為Null)
         sql = sql + " order by " + productQueryParms.getOrderBy() + " " + productQueryParms.getSort();
@@ -144,20 +135,25 @@ public class ProductDaoImp implements ProductDao {
         Map<String, Object> map = new HashMap<>();
 
         // 查詢條件
-        if(productQueryParms.getCategory() != null){
+        sql = addFilterSql(sql, map, productQueryParms);
+
+        // Integer.class => 將結果轉換成Integer類型的class
+        Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
+        return total;
+    }
+
+    private String addFilterSql(String sql, Map<String, Object> map, ProductQueryParms productQueryParms){
+        if (productQueryParms.getCategory() != null) {
             sql = sql + " and category = :category";
             //category.name() => 因為category是enum類型 要使用name()轉成字串型態才可以加入map
             map.put("category", productQueryParms.getCategory().name());
         }
 
-        if(productQueryParms.getSearch() != null){
+        if (productQueryParms.getSearch() != null) {
             sql = sql + " and product_name like :search";
-            map.put("search", "%"+productQueryParms.getSearch()+"%");
+            map.put("search", "%" + productQueryParms.getSearch() + "%");
         }
 
-        // Integer.class => 將結果轉換成Integer類型的class
-        Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
-
-        return total;
+        return sql;
     }
 }
