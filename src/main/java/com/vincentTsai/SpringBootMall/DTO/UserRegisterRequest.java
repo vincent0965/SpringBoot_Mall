@@ -1,10 +1,12 @@
 package com.vincentTsai.SpringBootMall.DTO;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 public class UserRegisterRequest {
 
     @NotBlank
+    @Email
     private String email;
 
     @NotBlank
