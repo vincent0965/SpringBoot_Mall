@@ -1,5 +1,6 @@
 package com.vincentTsai.SpringBootMall.Controller;
 
+import com.vincentTsai.SpringBootMall.DTO.UserLoginRequest;
 import com.vincentTsai.SpringBootMall.DTO.UserRegisterRequest;
 import com.vincentTsai.SpringBootMall.Service.UserService;
 import com.vincentTsai.SpringBootMall.modal.User;
@@ -28,5 +29,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
+    @PostMapping("/users/login")
+    public ResponseEntity<User> login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
+        User user = userService.login(userLoginRequest);
 
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
 }

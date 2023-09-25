@@ -1,6 +1,7 @@
 package com.vincentTsai.SpringBootMall.Service.impl;
 
 import com.vincentTsai.SpringBootMall.DAO.UserDao;
+import com.vincentTsai.SpringBootMall.DTO.UserLoginRequest;
 import com.vincentTsai.SpringBootMall.DTO.UserRegisterRequest;
 import com.vincentTsai.SpringBootMall.Service.UserService;
 import com.vincentTsai.SpringBootMall.modal.User;
@@ -41,5 +42,22 @@ public class UserServiceImpl implements UserService {
         return userDao.getUserById(userId);
     }
 
+    @Override
+    public User login(UserLoginRequest userLoginRequest) {
+        User user = userDao.getUserByEmail(userLoginRequest.getEmail());
 
+        //確認email是否有註冊
+        if (user == null){
+            log.warn("該Email {} 尚未註冊", userLoginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        //確認密碼
+        if (user.getPassword().equals(userLoginRequest.getPassword())){
+            return user;
+        } else {
+            log.warn("密碼錯誤");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
